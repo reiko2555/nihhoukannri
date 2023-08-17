@@ -94,4 +94,17 @@ public class Report {
     @Column(name = JpaConst.REP_COL_UPDATED_AT, nullable = false)
     private LocalDateTime updatedAt;
 
-}
+    /**
+     * いいね
+     */
+    @Column(name = JpaConst.REP_COL_LIKE_COUNT, nullable = false)
+    private Integer likecount=0;
+
+    public Integer getlikecount (){
+        return likecount;
+    }
+    public void setlikecount (Integer likecount){
+        this.likecount=likecount;
+    }
+
+    }

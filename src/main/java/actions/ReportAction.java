@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 
 import actions.views.EmployeeView;
@@ -12,7 +13,9 @@ import constants.AttributeConst;
 import constants.ForwardConst;
 import constants.JpaConst;
 import constants.MessageConst;
+import models.Report;
 import services.ReportService;
+import utils.DBUtil;
 
 /**
  * 日報に関する処理を行うActionクラス
@@ -112,7 +115,8 @@ public class ReportAction extends ActionBase {
                     getRequestParam(AttributeConst.REP_TITLE),
                     getRequestParam(AttributeConst.REP_CONTENT),
                     null,
-                    null);
+                    null,
+                    0);
 
             //日報情報登録
             List<String> errors = service.create(rv);
@@ -232,4 +236,29 @@ public class ReportAction extends ActionBase {
         }
     }
 
-}
+    /**
+     * いいねのやつ
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void likecount() throws ServletException, IOException {
+
+     //idを条件に日報データを取得する
+            EntityManager em=DBUtil.createEntityManager();
+            Report r =em.find(Report.class, Integer.valueOf(request.getParameter("report_id")));
+
+            int i = r.getlikecount();
+            i++;
+
+            r.setlikecount(i);
+            em.getTransaction().begin();
+            em.getTransaction().commit();
+            em.close();
+
+            //フラッシュメッセージを設定
+            putSessionScope(AttributeConst.FLUSH, MessageConst.I_REGISTERED.getMessage());
+
+            //一覧画面にリダイレクト
+            redirect(ForwardConst.ACT_REP, ForwardConst.CMD_INDEX);
+    }
+    }

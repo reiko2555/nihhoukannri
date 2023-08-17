@@ -6,6 +6,7 @@
 <c:set var="actRep" value="${ForwardConst.ACT_REP.getValue()}" />
 <c:set var="commIdx" value="${ForwardConst.CMD_INDEX.getValue()}" />
 <c:set var="commEdt" value="${ForwardConst.CMD_EDIT.getValue()}" />
+<c:set var="commLikecount" value="${ForwardConst.CMD_LIKECOUNT.getValue()}" />
 
 <c:import url="/WEB-INF/views/layout/app.jsp">
     <c:param name="content">
@@ -37,6 +38,10 @@
                     <fmt:parseDate value="${report.updatedAt}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="updateDay" type="date" />
                     <td><fmt:formatDate value="${updateDay}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                 </tr>
+                <tr>
+                  <th >いいね</th>
+                  <td><c:out value="${report.likecount}" /></td>
+                </tr>
             </tbody>
         </table>
 
@@ -45,8 +50,15 @@
                 <a href="<c:url value='?action=${actRep}&command=${commEdt}&id=${report.id}' />">この日報を編集する</a>
             </p>
         </c:if>
-
-        <p>
+         <c:if test="${sessionScope.login_employee.id != report.employee.id}">
+           <form method="POST" action="<c:url value='?action=${actRep}&command=${commLikecount}&id=${report.id}' />">
+            <p>
+            <input type="hidden" name="report_id" value="${report.id}">
+            <input type="image" alt="いいね" src="images/likecount.png" width="56" height="56">
+            </p>
+           </form>
+          </c:if>
+           <p>
             <a href="<c:url value='?action=${actRep}&command=${commIdx}' />">一覧に戻る</a>
         </p>
     </c:param>
